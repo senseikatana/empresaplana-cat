@@ -1,33 +1,36 @@
-# empresaplana
+# Empresaplana — Intranet Multi-stack
 
-## 🚀 Descripción
+Intranet corporativa de **Empresaplana**, implementada con distintos frameworks para comparar rendimiento, DX y funcionalidades.
 
-Proyecto **empresaplana**.
+## Versiones
 
-## 📦 Instalación
+| Versión | Tech stack | Estado |
+|---|---|---|
+| [`astro/`](astro/) | Astro + Islands | ✅ Activa |
+| [`nuxt/`](nuxt/) | Nuxt 3 + Vue | ✅ Activa |
+| [`react/`](react/) | React + Vite | ✅ Activa |
+| [`website/`](website/) | Por definir | 📋 Placeholder |
 
-```bash
-# Con Bun
-bun install
-
-# Con npm
-npm install
-```
-
-## 🛠️ Desarrollo
+## Instalación
 
 ```bash
-# Iniciar en modo desarrollo
-bun run dev
+# Astro
+cd astro && npm install && npm run dev
 
-# Build para producción
-bun run build
+# Nuxt
+cd nuxt && yarn install && yarn dev
 
-# Ejecutar tests
-bun run test
+# React
+cd react && npm install && npm run dev
 ```
 
-## 📄 Licencia
+## Estructura
 
-MIT © 2026 senseikatana - Sergio Jurado
-
+```
+empresaplana/
+├── astro/      # Intranet con Astro (SSR + Islands)
+├── nuxt/       # Intranet con Nuxt 3
+├── react/      # Intranet con React
+├── website/    # Website público (placeholder)
+└── README.md
+```
