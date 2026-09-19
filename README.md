@@ -8,7 +8,7 @@ Intranet corporativa de **Empresaplana**, implementada con distintos frameworks 
 |---|---|---|
 | [`astro/`](withastro/) | Astro + Islands | ✅ Activa |
 | [`nuxt/`](withnuxt/) | Nuxt 3 + Vue | ✅ Activa |
-| [`react/`](withnext/) | React + Vite | ✅ Activa |
+| [`next/`](withnext/) | Next-React + Vite | ✅ Activa |
 
 ## Instalación
 
@@ -29,6 +29,6 @@ cd withnext && bun install && bun run dev
 empresaplana/
 ├── withastro/      # Intranet con Astro (SSR + Islands)
 ├── withnuxt/       # Intranet con Nuxt 3
-├── withnext/      # Intranet con React
+├── withnext/      # Intranet con Next or React
 └── README.md
 ```
