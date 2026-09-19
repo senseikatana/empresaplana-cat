@@ -1,0 +1,238 @@
+{
+	"lineId": "tarragonaBarcelona",
+	"lineCode": "Línia 21",
+	"period": "29/06/2026 – 01/11/2026",
+	"directions": ["bcn-tgn", "tgn-bcn"],
+	"directionLabels": {
+		"bcn-tgn": {
+			"ca": "De Barcelona-Aeroport a Tarragona",
+			"es": "De Barcelona-Aeropuerto a Tarragona",
+			"en": "From Barcelona Airport to Tarragona",
+			"fr": "De Barcelone-Aéroport à Tarragone"
+		},
+		"tgn-bcn": {
+			"ca": "De Tarragona a Barcelona-Aeroport",
+			"es": "De Tarragona a Barcelona-Aeropuerto",
+			"en": "From Tarragona to Barcelona Airport",
+			"fr": "De Tarragone à Barcelone-Aéroport"
+		}
+	},
+	"calendars": ["feiners", "dissabtes", "diumenges"],
+	"calendarLabels": {
+		"feiners": { "ca": "Feiners", "es": "Laborables", "en": "Weekdays", "fr": "Jours ouvrables" },
+		"dissabtes": {
+			"ca": "Dissabtes, diumenges i festius",
+			"es": "Sábados, domingos y festivos",
+			"en": "Saturdays, Sundays & holidays",
+			"fr": "Samedis, dimanches et fêtes"
+		},
+		"diumenges": {
+			"ca": "Diumenges i festius",
+			"es": "Domingos y festivos",
+			"en": "Sundays & holidays",
+			"fr": "Dimanches et fêtes"
+		}
+	},
+	"tables": {
+		"bcn-tgn": {
+			"feiners": {
+				"stops": [
+					"Aeroport T1",
+					"Aeroport T2",
+					"C/Sèlvio Pelligri (Recinte Firal)",
+					"Barcelona Estació de França (Metro Arc de Triomf)",
+					"Barcelona Estació del Nord (Monumental)",
+					"Hospital de Sant Pau (Guinardó)",
+					"La Pineda (Hotel Checkin)",
+					"Salou (Av. Principat)",
+					"Salou (Estació d'autobusos)",
+					"Cambrils (Av. Diputació)",
+					"Vila-seca (Plaça de l'Estació)",
+					"Tarragona (Estació d'autobusos)"
+				],
+				"columns": [
+					"06:00",
+					"07:30",
+					"10:00",
+					"12:00",
+					"14:00",
+					"16:00",
+					"18:00",
+					"20:00",
+					"21:30"
+				],
+				"rows": [
+					["06:00", "07:30", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "21:30"],
+					["06:05", "07:35", "10:05", "12:05", "14:05", "16:05", "18:05", "20:05", "21:35"],
+					["06:15", "07:45", "10:15", "12:15", "14:15", "16:15", "18:15", "20:15", "21:45"],
+					["06:30", "08:00", "10:30", "12:30", "14:30", "16:30", "18:30", "20:30", "22:00"],
+					["06:40", "08:10", "10:40", "12:40", "14:40", "16:40", "18:40", "20:40", "22:10"],
+					["06:50", "08:20", "10:50", "12:50", "14:50", "16:50", "18:50", "20:50", "22:20"],
+					["07:50", "09:20", "11:50", "13:50", "15:50", "17:50", "19:50", "21:50", "23:20"],
+					["08:00", "09:30", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00", "23:30"],
+					["08:05", "09:35", "12:05", "14:05", "16:05", "18:05", "20:05", "22:05", "23:35"],
+					["08:15", "09:45", "12:15", "14:15", "16:15", "18:15", "20:15", "22:15", "23:45"],
+					["08:25", "09:55", "12:25", "14:25", "16:25", "18:25", "20:25", "22:25", "23:55"],
+					["08:40", "10:10", "12:40", "14:40", "16:40", "18:40", "20:40", "22:40", "00:10"]
+				]
+			},
+			"dissabtes": {
+				"stops": [
+					"Barcelona Estació del Nord (Monumental)",
+					"Hospital de Sant Pau (Guinardó)",
+					"La Pineda (Hotel Checkin)",
+					"Salou (Av. Principat)",
+					"Salou (Estació d'autobusos)",
+					"Cambrils (Av. Diputació)",
+					"Vila-seca (Plaça de l'Estació)",
+					"Tarragona (Estació d'autobusos)"
+				],
+				"columns": ["08:30", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00"],
+				"rows": [
+					["08:30", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00"],
+					["08:40", "10:10", "12:10", "14:10", "16:10", "18:10", "20:10"],
+					["09:40", "11:10", "13:10", "15:10", "17:10", "19:10", "21:10"],
+					["09:50", "11:20", "13:20", "15:20", "17:20", "19:20", "21:20"],
+					["09:55", "11:25", "13:25", "15:25", "17:25", "19:25", "21:25"],
+					["10:05", "11:35", "13:35", "15:35", "17:35", "19:35", "21:35"],
+					["10:15", "11:45", "13:45", "15:45", "17:45", "19:45", "21:45"],
+					["10:30", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00"]
+				]
+			},
+			"diumenges": {
+				"stops": [
+					"Barcelona Estació del Nord (Monumental)",
+					"Hospital de Sant Pau (Guinardó)",
+					"La Pineda (Hotel Checkin)",
+					"Salou (Av. Principat)",
+					"Salou (Estació d'autobusos)",
+					"Cambrils (Av. Diputació)",
+					"Vila-seca (Plaça de l'Estació)",
+					"Tarragona (Estació d'autobusos)"
+				],
+				"columns": ["09:00", "12:00", "16:00", "18:00"],
+				"rows": [
+					["09:00", "12:00", "16:00", "18:00"],
+					["09:10", "12:10", "16:10", "18:10"],
+					["10:10", "13:10", "17:10", "19:10"],
+					["10:20", "13:20", "17:20", "19:20"],
+					["10:25", "13:25", "17:25", "19:25"],
+					["10:35", "13:35", "17:35", "19:35"],
+					["10:45", "13:45", "17:45", "19:45"],
+					["11:00", "14:00", "18:00", "20:00"]
+				]
+			}
+		},
+		"tgn-bcn": {
+			"feiners": {
+				"stops": [
+					"Tarragona (Estació d'autobusos)",
+					"Vila-seca (Plaça de l'Estació)",
+					"Cambrils (Av. Diputació)",
+					"Salou (Estació d'autobusos)",
+					"Salou (Av. Principat)",
+					"La Pineda (Hotel Checkin)",
+					"Hospital de Sant Pau (Guinardó)",
+					"Barcelona Estació del Nord (Monumental)",
+					"Barcelona Estació de França (Metro Arc de Triomf)",
+					"C/Sèlvio Pelligri (Recinte Firal)",
+					"Aeroport T2",
+					"Aeroport T1"
+				],
+				"columns": ["06:00", "07:30", "09:00", "11:00", "13:00", "15:00", "17:00", "19:00"],
+				"rows": [
+					["06:00", "07:30", "09:00", "11:00", "13:00", "15:00", "17:00", "19:00"],
+					["06:10", "07:40", "09:10", "11:10", "13:10", "15:10", "17:10", "19:10"],
+					["06:20", "07:50", "09:20", "11:20", "13:20", "15:20", "17:20", "19:20"],
+					["06:25", "07:55", "09:25", "11:25", "13:25", "15:25", "17:25", "19:25"],
+					["06:30", "08:00", "09:30", "11:30", "13:30", "15:30", "17:30", "19:30"],
+					["07:30", "09:00", "10:30", "12:30", "14:30", "16:30", "18:30", "20:30"],
+					["08:30", "10:00", "11:30", "13:30", "15:30", "17:30", "19:30", "21:30"],
+					["08:40", "10:10", "11:40", "13:40", "15:40", "17:40", "19:40", "21:40"],
+					["08:50", "10:20", "11:50", "13:50", "15:50", "17:50", "19:50", "21:50"],
+					["09:00", "10:30", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00"],
+					["09:10", "10:40", "12:10", "14:10", "16:10", "18:10", "20:10", "22:10"],
+					["09:15", "10:45", "12:15", "14:15", "16:15", "18:15", "20:15", "22:15"]
+				]
+			},
+			"dissabtes": {
+				"stops": [
+					"Tarragona (Estació d'autobusos)",
+					"Vila-seca (Plaça de l'Estació)",
+					"Cambrils (Av. Diputació)",
+					"Salou (Estació d'autobusos)",
+					"Salou (Av. Principat)",
+					"La Pineda (Hotel Checkin)",
+					"Hospital de Sant Pau (Guinardó)",
+					"Barcelona Estació del Nord (Monumental)"
+				],
+				"columns": ["08:30", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00"],
+				"rows": [
+					["08:30", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00"],
+					["08:40", "10:10", "12:10", "14:10", "16:10", "18:10", "20:10"],
+					["08:50", "10:20", "12:20", "14:20", "16:20", "18:20", "20:20"],
+					["08:55", "10:25", "12:25", "14:25", "16:25", "18:25", "20:25"],
+					["09:00", "10:30", "12:30", "14:30", "16:30", "18:30", "20:30"],
+					["10:00", "11:30", "13:30", "15:30", "17:30", "19:30", "21:30"],
+					["11:00", "12:30", "14:30", "16:30", "18:30", "20:30", "22:30"],
+					["11:10", "12:40", "14:40", "16:40", "18:40", "20:40", "22:40"]
+				]
+			},
+			"diumenges": {
+				"stops": [
+					"Tarragona (Estació d'autobusos)",
+					"Vila-seca (Plaça de l'Estació)",
+					"Cambrils (Av. Diputació)",
+					"Salou (Estació d'autobusos)",
+					"Salou (Av. Principat)",
+					"La Pineda (Hotel Checkin)",
+					"Hospital de Sant Pau (Guinardó)",
+					"Barcelona Estació del Nord (Monumental)"
+				],
+				"columns": ["09:00", "12:00", "16:00", "18:00"],
+				"rows": [
+					["09:00", "12:00", "16:00", "18:00"],
+					["09:10", "12:10", "16:10", "18:10"],
+					["09:20", "12:20", "16:20", "18:20"],
+					["09:25", "12:25", "16:25", "18:25"],
+					["09:30", "12:30", "16:30", "18:30"],
+					["10:30", "13:30", "17:30", "19:30"],
+					["11:30", "14:30", "18:30", "20:30"],
+					["11:40", "14:40", "18:40", "20:40"]
+				]
+			}
+		}
+	},
+	"notes": {
+		"express": {
+			"ca": "Servei exprés",
+			"es": "Servicio exprés",
+			"en": "Express service",
+			"fr": "Service express"
+		},
+		"saturdayOnly": {
+			"ca": "Només dissabtes laborables",
+			"es": "Solo sábados laborables",
+			"en": "Working Saturdays only",
+			"fr": "Samedis ouvrables uniquement"
+		},
+		"trafficNote": {
+			"ca": "Subjecte a retards per trànsit",
+			"es": "Sujeto a retrasos por tráfico",
+			"en": "Subject to traffic delays",
+			"fr": "Sous réserve de retards dus au trafic"
+		},
+		"t10120": {
+			"ca": "10 viatges / 120 min (T-casual)",
+			"es": "10 viajes / 120 min (T-casual)",
+			"en": "10 trips / 120 min (T-casual)",
+			"fr": "10 voyages / 120 min (T-casual)"
+		},
+		"airportNote": {
+			"ca": "Servei des de/de l'Aeroport",
+			"es": "Servicio desde/del Aeropuerto",
+			"en": "Service from/to Airport",
+			"fr": "Service depuis/vers l'Aéroport"
+		}
+	}
+}
