@@ -1,0 +1,80 @@
+[
+  {
+    "id": "1e309a1b-77df-4f8f-8706-106f39fd44ea",
+    "customer_name": "Maria Garcia",
+    "customer_email": "mgarcia@gmail.com",
+    "customer_phone": "666111222",
+    "route_id": null,
+    "travel_date": "2026-09-18",
+    "passengers": 1,
+    "status": "pending",
+    "total_price": "15.90",
+    "notes": "Flight arrives at 05:45",
+    "created_at": "2026-09-16 08:16:18.36055+00"
+  },
+  {
+    "id": "a67db613-2c88-4ef6-8125-c1ec7c0e9148",
+    "customer_name": "Ajuntament de Constantí",
+    "customer_email": "cultura@constanti.cat",
+    "customer_phone": "977520000",
+    "route_id": null,
+    "travel_date": "2026-09-25",
+    "passengers": 45,
+    "status": "confirmed",
+    "total_price": "450.00",
+    "notes": "School excursion - needs 1 bus",
+    "created_at": "2026-09-16 08:16:18.36055+00"
+  },
+  {
+    "id": "11e183c6-858a-45f6-b498-e6150fbbb501",
+    "customer_name": "Camping Salou",
+    "customer_email": "info@campingsalou.com",
+    "customer_phone": "977350111",
+    "route_id": null,
+    "travel_date": "2026-09-22",
+    "passengers": 8,
+    "status": "pending",
+    "total_price": "32.80",
+    "notes": "Weekly shopping trip for campers",
+    "created_at": "2026-09-16 08:16:18.36055+00"
+  },
+  {
+    "id": "845d17dc-eeeb-4bb5-9316-47b5b157fac0",
+    "customer_name": "Joan Marti",
+    "customer_email": "jmarti@hotmail.com",
+    "customer_phone": "677888999",
+    "route_id": null,
+    "travel_date": "2026-09-17",
+    "passengers": 2,
+    "status": "completed",
+    "total_price": "25.00",
+    "notes": "",
+    "created_at": "2026-09-16 08:16:18.36055+00"
+  },
+  {
+    "id": "d3d98a50-7274-4a8e-93cc-2842ad9d0ce1",
+    "customer_name": "Hotel La Pineda",
+    "customer_email": "reservas@lapineda.com",
+    "customer_phone": "977330000",
+    "route_id": null,
+    "travel_date": "2026-09-20",
+    "passengers": 12,
+    "status": "confirmed",
+    "total_price": "150.00",
+    "notes": "Group transfer for conference guests",
+    "created_at": "2026-09-16 08:16:18.36055+00"
+  },
+  {
+    "id": "2cd9d4b7-0a9e-408a-8ddd-d664e678d5cb",
+    "customer_name": "Sergio Jurado",
+    "customer_email": "intranet-redesign-dg.outclass980@passinbox.com",
+    "customer_phone": "637723747",
+    "route_id": "a0b213ba-db29-40b6-8651-8a661f673019",
+    "travel_date": "2026-09-18",
+    "passengers": 50,
+    "status": "pending",
+    "total_price": "0",
+    "notes": null,
+    "created_at": "2026-09-16 09:05:39.196738+00"
+  }
+]

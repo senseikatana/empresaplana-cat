@@ -1,0 +1,63 @@
+# build output
+dist/
+
+# Nuxt
+.nuxt/
+.output/
+
+# Wrangler local state
+.wrangler/
+
+# generated types
+.astro/
+.vscode/
+.atl/
+.cursor/
+.codex/
+.claude/
+.vscode/*.json
+generated/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment variables
+.env
+!.env.production
+!.nv.template
+.dev.vars
+# macOS-specific files
+.DS_Store
+
+# jetbrains setting folder
+.idea/
+
+# Releases Root Folder 
+RELEASES/
+RELEASES/*
+src/Releases/
+
+# local runtime data (bus tracking store) and agent tooling
+.data/
+.zcode/
+
+# InsForge & AI agent skills
+.insforge
+.agent
+.agents
+.augment
+.claude
+.cline
+.github/copilot*
+.kilocode
+.qoder
+.qwen
+.roo
+.trae
+.windsurf
