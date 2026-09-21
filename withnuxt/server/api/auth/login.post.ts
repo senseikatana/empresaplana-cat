@@ -2,7 +2,9 @@ import { z } from "zod";
 import { isRole } from "#shared/acl";
 import { setSessionCookie, signSessionToken } from "../../utils/auth";
 import { verifyPasskey } from "../../utils/passkey";
+import { createLogger } from "../../utils/logger";
 
+const log = createLogger("api:auth:login");
 const loginSchema = z.object({
 	username: z.string().min(1).max(60),
 	passkey: z.string().min(1).max(128),
@@ -21,6 +23,7 @@ export default defineEventHandler(async (event) => {
 	const user = await prisma().user.findUnique({ where: { username } });
 	// Fantasmas anónimos (passkey "") y roles corruptos nunca autentican.
 	if (!user || !isRole(user.role) || !verifyPasskey(passkey, user.passkey)) {
+		log.warn("Login failed", { username });
 		throw createError({
 			statusCode: 401,
 			statusMessage: "Credencials invàlides",
@@ -33,6 +36,7 @@ export default defineEventHandler(async (event) => {
 		role: user.role,
 	});
 	setSessionCookie(event, token);
+	log.info("Login successful", { userId: user.id, role: user.role });
 
 	return {
 		user: {

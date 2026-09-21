@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { NavigationMenuItem } from "@nuxt/ui";
 import { hasCapability, isRole } from "#shared/acl";
 
 const { t, locale } = useI18n();
@@ -6,11 +7,12 @@ const localePath = useLocalePath();
 const switchLocalePath = useSwitchLocalePath();
 const route = useRoute();
 
+const { isNotificationsSlideoverOpen, toggleCommandPalette } = useDashboard();
+
 const { data } = await useFetch<{
-	user: { id: number; username: string; role: string };
+	user: { id: number; username: string; name?: string; role: string };
 }>("/api/me", { headers: useRequestHeaders(["cookie"]) });
 
-// El panel es privado: no debe indexarse
 useHead({ meta: [{ name: "robots", content: "noindex, nofollow" }] });
 
 const role = computed(() => {
@@ -18,233 +20,109 @@ const role = computed(() => {
 	return r && isRole(r) ? r : undefined;
 });
 
-const locales = computed(() =>
-	(["ca", "es", "en", "fr"] as const).map((code) => ({
-		code,
-		label: t(`common.lang.${code}`),
-		href: switchLocalePath(code),
-	})),
-);
+const userName = computed(() => data.value?.user?.name ?? data.value?.user?.username ?? "");
 
-const messagesNav = {
-	key: "messages",
-	href: "/dashboard/mensajes",
-	icon: "forum",
-	label: t("app.panel.messages"),
-};
-
-const clientNav = [
-	{
-		key: "home",
-		href: "/dashboard/cliente",
-		icon: "home",
-		label: t("app.panel.home"),
-	},
-	{
-		key: "account",
-		href: "/dashboard/cliente/cuenta",
-		icon: "person",
-		label: t("app.panel.account"),
-	},
-	{
-		key: "favorites",
-		href: "/dashboard/cliente/favoritas",
-		icon: "star",
-		label: t("app.panel.favorites"),
-	},
-	{
-		key: "quotes",
-		href: "/dashboard/cliente/cotizaciones",
-		icon: "request_quote",
-		label: t("app.panel.quotes"),
-	},
-	messagesNav,
+// --- Navigation items per role ---
+const clientNav: NavigationMenuItem[] = [
+	{ label: t("app.panel.home"), icon: "i-lucide-home", to: localePath("/dashboard/cliente") },
+	{ label: t("app.panel.account"), icon: "i-lucide-user", to: localePath("/dashboard/cliente/cuenta") },
+	{ label: t("app.panel.favorites"), icon: "i-lucide-star", to: localePath("/dashboard/cliente/favoritas") },
+	{ label: t("app.panel.quotes"), icon: "i-lucide-file-text", to: localePath("/dashboard/cliente/cotizaciones") },
+	{ label: t("app.panel.messages"), icon: "i-lucide-message-circle", to: localePath("/dashboard/mensajes") },
 ];
 
-const workerNav = [
-	{
-		key: "home",
-		href: "/dashboard/trabajador",
-		icon: "directions_bus",
-		label: t("app.panel.home"),
-	},
-	{
-		key: "lines",
-		href: "/dashboard/trabajador/lineas",
-		icon: "route",
-		label: t("app.panel.lines"),
-	},
-	{
-		key: "incidents",
-		href: "/dashboard/trabajador/incidencias",
-		icon: "notifications",
-		label: t("app.panel.incidents"),
-	},
-	{
-		key: "reports",
-		href: "/dashboard/trabajador/reportes",
-		icon: "fact_check",
-		label: t("app.panel.reports"),
-	},
-	messagesNav,
+const workerNav: NavigationMenuItem[] = [
+	{ label: t("app.panel.home"), icon: "i-lucide-bus", to: localePath("/dashboard/trabajador") },
+	{ label: t("app.panel.lines"), icon: "i-lucide-route", to: localePath("/dashboard/trabajador/lineas") },
+	{ label: t("app.panel.incidents"), icon: "i-lucide-alert-triangle", to: localePath("/dashboard/trabajador/incidencias") },
+	{ label: t("app.panel.reports"), icon: "i-lucide-clipboard-check", to: localePath("/dashboard/trabajador/reportes") },
+	{ label: t("app.panel.messages"), icon: "i-lucide-message-circle", to: localePath("/dashboard/mensajes") },
 ];
 
-const adminNav = [
-	{
-		key: "panel",
-		href: "/dashboard/gestion",
-		icon: "space_dashboard",
-		label: t("app.gestion.nav.panel"),
-	},
-	{
-		key: "map",
-		href: "/dashboard/gestion/mapa",
-		icon: "map",
-		label: t("app.gestion.nav.map"),
-	},
-	{
-		key: "routes",
-		href: "/dashboard/gestion/rutas",
-		icon: "route",
-		label: t("app.gestion.nav.routes"),
-	},
-	{
-		key: "buses",
-		href: "/dashboard/gestion/autobuses",
-		icon: "directions_bus",
-		label: t("app.gestion.nav.buses"),
-	},
-	{
-		key: "stops",
-		href: "/dashboard/gestion/paradas",
-		icon: "location_on",
-		label: t("app.gestion.nav.stops"),
-	},
-	{
-		key: "schedules",
-		href: "/dashboard/gestion/horarios",
-		icon: "schedule",
-		label: t("app.gestion.nav.schedules"),
-	},
-	{
-		key: "drivers",
-		href: "/dashboard/gestion/conductores",
-		icon: "badge",
-		label: t("app.gestion.nav.drivers"),
-	},
-	{
-		key: "notifications",
-		href: "/dashboard/gestion/notificaciones",
-		icon: "notifications",
-		label: t("app.gestion.nav.notifications"),
-	},
-	{
-		key: "reports",
-		href: "/dashboard/gestion/reportes",
-		icon: "bar_chart",
-		label: t("app.gestion.nav.reports"),
-	},
-	{
-		key: "integrations",
-		href: "/dashboard/gestion/integraciones",
-		icon: "hub",
-		label: t("app.gestion.nav.integrations"),
-	},
-	messagesNav,
+const adminNav: NavigationMenuItem[] = [
+	{ label: t("app.gestion.nav.panel"), icon: "i-lucide-layout-dashboard", to: localePath("/dashboard/gestion") },
+	{ label: t("app.gestion.nav.map"), icon: "i-lucide-map", to: localePath("/dashboard/gestion/mapa") },
+	{ label: t("app.gestion.nav.routes"), icon: "i-lucide-route", to: localePath("/dashboard/gestion/rutas") },
+	{ label: t("app.gestion.nav.buses"), icon: "i-lucide-bus", to: localePath("/dashboard/gestion/autobuses") },
+	{ label: t("app.gestion.nav.stops"), icon: "i-lucide-map-pin", to: localePath("/dashboard/gestion/paradas") },
+	{ label: t("app.gestion.nav.schedules"), icon: "i-lucide-clock", to: localePath("/dashboard/gestion/horarios") },
+	{ label: t("app.gestion.nav.drivers"), icon: "i-lucide-id-card", to: localePath("/dashboard/gestion/conductores") },
+	{ label: t("app.gestion.nav.notifications"), icon: "i-lucide-bell", to: localePath("/dashboard/gestion/notificaciones") },
+	{ label: t("app.gestion.nav.reports"), icon: "i-lucide-bar-chart-3", to: localePath("/dashboard/gestion/reportes") },
+	{ label: t("app.gestion.nav.integrations"), icon: "i-lucide-plug", to: localePath("/dashboard/gestion/integraciones") },
+	{ label: t("app.panel.messages"), icon: "i-lucide-message-circle", to: localePath("/dashboard/mensajes") },
 ];
 
-const navItems = computed(() => {
+const navItems = computed<NavigationMenuItem[]>(() => {
 	if (!role.value) return [];
 	if (hasCapability(role.value, "users:manage")) return adminNav;
 	if (hasCapability(role.value, "fleet:view")) return workerNav;
 	return clientNav;
 });
 
+const footerNav: NavigationMenuItem[] = [
+	{ label: t("app.panel.backToSite"), icon: "i-lucide-external-link", to: localePath("/") },
+];
+
 async function logout() {
 	await $fetch("/api/auth/logout", { method: "POST" });
 	await navigateTo(localePath("/dashboard/login"));
 }
+
+// --- Keyboard shortcuts ---
+const shortcuts: { label: string; kbd: string[]; action: () => void }[] = [
+	{ label: t("app.panel.messages"), kbd: ["M"], action: () => navigateTo(localePath("/dashboard/mensajes")) },
+	{ label: "Notifications", kbd: ["N"], action: toggleNotifications },
+	{ label: "Command Palette", kbd: ["Meta", "K"], action: toggleCommandPalette },
+];
+
+onMounted(() => {
+	function handleKeydown(e: KeyboardEvent) {
+		if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+			e.preventDefault();
+			toggleCommandPalette();
+		}
+	}
+	window.addEventListener("keydown", handleKeydown);
+	return () => window.removeEventListener("keydown", handleKeydown);
+});
 </script>
 
 <template>
-	<div class="min-h-screen bg-background text-on-surface">
-		<!-- App bar -->
-		<header class="sticky top-0 z-40 bg-surface-container-lowest/95 backdrop-blur-md border-b border-surface-variant">
-			<div class="flex items-center justify-between gap-4 px-margin-mobile md:px-margin-desktop h-16">
-				<div class="flex items-center gap-3">
-					<NuxtLink :to="localePath('/')" class="flex items-center gap-2.5">
-						<span class="material-symbols-outlined icon-filled text-deep-navy">directions_bus</span>
-						<span class="font-headline-md text-headline-md font-bold text-deep-navy leading-none">{{ t("common.brand") }}</span>
-						<span class="rounded bg-coastal-teal/15 px-1.5 py-0.5 font-label-md text-label-md text-on-secondary-container hidden sm:inline">App</span>
-					</NuxtLink>
-				</div>
-				<div class="flex items-center gap-4">
-					<nav class="hidden md:flex items-center gap-2 font-label-md text-label-md">
-						<NuxtLink
-							v-for="l in locales"
-							:key="l.code"
-							:class="['transition-colors', l.code === locale ? 'font-bold text-deep-navy' : 'text-on-surface-variant hover:text-deep-navy']"
-							:to="l.href"
-						>
-							{{ l.label }}
-						</NuxtLink>
-					</nav>
-					<NuxtLink :to="localePath('/')" class="text-on-surface-variant hover:text-deep-navy transition-colors" :aria-label="t('app.panel.backToSite')">
-						<span class="material-symbols-outlined text-[26px]">open_in_new</span>
-					</NuxtLink>
-					<UButton variant="ghost" color="neutral" @click="logout">
-						{{ t("app.nav.logout") }}
-					</UButton>
-				</div>
-			</div>
-		</header>
-
-		<div class="flex">
-			<!-- Sidebar (desktop) -->
-<aside class="hidden lg:block w-64 shrink-0 border-r border-surface-variant">
-			<nav class="sticky top-16 py-stack-lg pr-3" aria-label="Dashboard">
-				<ul class="flex flex-col gap-1.5">
-					<li v-for="item in navItems" :key="item.key">
-						<NuxtLink
-							:class="[
-								'flex items-center gap-3 rounded-lg px-4 py-3.5 font-label-md text-label-md transition-colors',
-								$route.path === localePath(item.href)
-									? 'bg-deep-navy text-on-primary shadow-sm'
-									: 'text-on-surface-variant hover:bg-surface-container-low hover:text-deep-navy',
-							]"
-							:to="localePath(item.href)"
-							:aria-current="$route.path === localePath(item.href) ? 'page' : undefined"
-						>
-							<span class="material-symbols-outlined text-[22px]">{{ item.icon }}</span>
-							{{ item.label }}
-						</NuxtLink>
-					</li>
-				</ul>
-			</nav>
-		</aside>
-
-			<!-- Content -->
-			<div class="min-w-0 flex-1 px-margin-mobile md:px-margin-desktop py-stack-lg pb-28 lg:pb-20">
-				<slot />
-			</div>
-		</div>
-
-		<!-- Bottom nav (mobile) -->
-		<nav class="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-surface-container-lowest border-t border-surface-variant shadow-ambient">
-			<div class="mx-auto max-w-6xl px-2 py-1.5 flex justify-between items-center">
-				<NuxtLink
-					v-for="item in navItems.slice(0, 5)"
-					:key="item.key"
-					:class="[
-						'flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 min-w-[64px] transition-colors',
-						$route.path === localePath(item.href) ? 'text-deep-navy' : 'text-on-surface-variant hover:text-deep-navy',
-					]"
-					:to="localePath(item.href)"
-				>
-					<span :class="['material-symbols-outlined text-[24px]', $route.path === localePath(item.href) ? 'icon-filled' : '']">{{ item.icon }}</span>
-					<span class="text-[10px] font-label-md leading-none">{{ item.label }}</span>
+	<UDashboardGroup>
+		<UDashboardSidebar
+			collapsible
+			resizable
+			:ui="{ footer: 'border-t border-default' }"
+		>
+			<template #header="{ collapsed }">
+				<NuxtLink :to="localePath('/')" class="flex items-center gap-2.5" :class="collapsed ? 'justify-center' : ''">
+					<span class="i-lucide-bus text-xl text-primary shrink-0" />
+					<span v-if="!collapsed" class="font-bold text-highlighted truncate">
+						{{ t("common.brand") }}
+					</span>
 				</NuxtLink>
-			</div>
-		</nav>
-	</div>
+			</template>
+
+			<template #default="{ collapsed }">
+				<UNavigationMenu :items="navItems" :collapsed="collapsed" />
+			</template>
+
+			<template #footer="{ collapsed }">
+				<div class="flex flex-col gap-2">
+					<UNavigationMenu :items="footerNav" :collapsed="collapsed" />
+					<div v-if="!collapsed" class="flex items-center gap-2 px-2 py-1.5">
+						<UAvatar :alt="userName" size="sm" color="primary" />
+						<div class="flex-1 min-w-0">
+							<p class="text-sm font-medium text-highlighted truncate">{{ userName }}</p>
+							<p class="text-xs text-muted">{{ t(`app.role.${role ?? 'client'}`) }}</p>
+						</div>
+						<UButton icon="i-lucide-log-out" color="neutral" variant="ghost" size="xs" @click="logout" />
+					</div>
+				</div>
+			</template>
+		</UDashboardSidebar>
+
+		<slot />
+	</UDashboardGroup>
 </template>

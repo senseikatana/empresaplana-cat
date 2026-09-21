@@ -1,6 +1,8 @@
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../generated/prisma/client";
+import { createLogger } from "./logger";
 
+const log = createLogger("prisma");
 let _client: PrismaClient | undefined;
 
 function connectionString(): string | undefined {
@@ -17,6 +19,7 @@ export function prisma(): PrismaClient {
 		}
 		const adapter = new PrismaPg({ connectionString: url });
 		_client = new PrismaClient({ adapter });
+		log.info("Prisma client initialized");
 	}
 	return _client;
 }

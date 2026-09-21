@@ -2,7 +2,9 @@ import type { H3Event } from "h3";
 import { deleteCookie, getCookie, setCookie } from "h3";
 import { jwtVerify, SignJWT } from "jose";
 import { isRole, type Role } from "#shared/acl";
+import { createLogger } from "./logger";
 
+const log = createLogger("auth");
 const SESSION_COOKIE = "ep_session";
 const SESSION_MAX_AGE = 60 * 60 * 24 * 7;
 const ISSUER = "empresaplana";
@@ -52,7 +54,8 @@ export async function getSessionUser(
 			username: payload.username,
 			role: payload.role,
 		};
-	} catch {
+	} catch (err) {
+		log.debug("Session verification failed", { error: err });
 		return null;
 	}
 }

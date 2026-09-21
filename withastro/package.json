@@ -27,6 +27,7 @@
 		"astro": "^7.1.3",
 		"drizzle-orm": "^0.45.2",
 		"jose": "^6.2.9",
+		"katanakit-js": "^3.2.2",
 		"react": "^19.2.8",
 		"react-dom": "^19.2.8",
 		"tailwindcss": "^4.3.3",

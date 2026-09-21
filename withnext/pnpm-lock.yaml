@@ -191,8 +191,8 @@ importers:
         specifier: ^6.2.12
         version: 6.2.12
       katanakit-js:
-        specifier: ^3.1.2
-        version: 3.1.2(@prisma/cli-engine@0.3.0(@prisma/management-api-sdk@1.74.0))(dotenv@17.4.2)(express@5.2.1)(typanion@3.14.0)(typescript@5.9.3)(vite@8.3.0(@types/node@26.5.1)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13))
+        specifier: ^3.2.2
+        version: 3.2.2(@prisma/cli-engine@0.3.0(@prisma/management-api-sdk@1.74.0))(dotenv@17.4.2)(express@5.2.1)(typanion@3.14.0)(typescript@5.9.3)(vite@8.3.0(@types/node@26.5.1)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13))
       next:
         specifier: ^15.5.25
         version: 15.5.25(@types/node@26.5.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -2021,8 +2021,8 @@ packages:
   jsonc-parser@3.3.1:
     resolution: {integrity: sha512-HUgH65KyejrUFPvHFPbqOY0rsFip3Bo5wb4ngvdi1EpCYWUQDC5V+Y7mZws+DLkr4M//zQJoanu1SP+87Dv1oQ==}
 
-  katanakit-js@3.1.2:
-    resolution: {integrity: sha512-+ecMs/Fsp0I+w9xulbb29E6UZ7hynA5b7+ywR4Xiv5EfXIMXYBY2Bq0CG9zH2kcP/BWhzRuCbFp0mlqRJe/BUw==}
+  katanakit-js@3.2.2:
+    resolution: {integrity: sha512-VQTQOtY1NF5dRd73Z40uDZQy4dCm1b+CGiudVgkpEapwntmAdrnUOJ8CKsVYZm1VuCAIFY3bZm6L+UrrfOJH/w==}
     engines: {node: '>=22.18.0'}
     peerDependencies:
       cors: '>=2.8.0'
@@ -4604,7 +4604,7 @@ snapshots:
 
   jsonc-parser@3.3.1: {}
 
-  katanakit-js@3.1.2(@prisma/cli-engine@0.3.0(@prisma/management-api-sdk@1.74.0))(dotenv@17.4.2)(express@5.2.1)(typanion@3.14.0)(typescript@5.9.3)(vite@8.3.0(@types/node@26.5.1)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)):
+  katanakit-js@3.2.2(@prisma/cli-engine@0.3.0(@prisma/management-api-sdk@1.74.0))(dotenv@17.4.2)(express@5.2.1)(typanion@3.14.0)(typescript@5.9.3)(vite@8.3.0(@types/node@26.5.1)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)):
     dependencies:
       '@js-temporal/polyfill': 0.5.1
       '@prisma/orm-postgres': 8.0.0-rc.8(@prisma/cli-engine@0.3.0(@prisma/management-api-sdk@1.74.0))(typanion@3.14.0)(typescript@5.9.3)(vite@8.3.0(@types/node@26.5.1)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13))

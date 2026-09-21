@@ -13,6 +13,8 @@ node_modules/
 !.yarn/versions
 dist/
 build/
+.atl/
+
 
 # IDEs
 .vscode/
