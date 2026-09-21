@@ -1,4 +1,4 @@
-export type Locale = "ca" | "es" | "en";
+export type Locale = "ca" | "es" | "en" | "fr";
 export interface CommonNav {
 	services: string;
 	locations: string;
@@ -10,6 +10,7 @@ export interface CommonLang {
 	ca: string;
 	es: string;
 	en: string;
+	fr: string;
 }
 export interface CommonFooter {
 	privacy: string;

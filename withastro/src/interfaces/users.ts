@@ -1,9 +1,8 @@
-import type { UsuarioRole } from "@/db/schema";
-
-
+import type { UsuarioRole } from "@/interfaces/auth";
 
 export interface PublicUser {
 	id: number;
+	name: string;
 	fullName: string;
 	email: string;
 	username: string;
@@ -11,6 +10,5 @@ export interface PublicUser {
 	createdAt?: Date | null;
 	phone?: string;
 }
-
 
 export interface AdminUser extends PublicUser {}

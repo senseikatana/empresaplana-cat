@@ -1,7 +1,18 @@
-import type { usuarios } from "@/db/schema";
+import type { UsuarioRole } from "@/interfaces/auth";
 import type { PublicUser } from "@/interfaces/users";
 
-export function publicUser(row: typeof usuarios.$inferSelect): PublicUser {
+interface UserRow {
+	id: number;
+	name: string;
+	fullName: string;
+	phone: string;
+	email: string;
+	username: string;
+	role: string;
+	createdAt?: Date | null;
+}
+
+export function publicUser(row: UserRow): PublicUser {
 	return {
 		id: row.id,
 		name: row.name,
@@ -9,7 +20,7 @@ export function publicUser(row: typeof usuarios.$inferSelect): PublicUser {
 		phone: row.phone,
 		email: row.email,
 		username: row.username,
-		role: row.role,
+		role: row.role as UsuarioRole,
 		createdAt: row.createdAt,
 	};
 }

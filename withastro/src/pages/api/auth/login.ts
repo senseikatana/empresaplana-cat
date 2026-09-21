@@ -1,8 +1,6 @@
 import type { APIRoute } from "astro";
-import { eq } from "drizzle-orm";
-import { usuarios } from "@/db/schema";
+import { prisma } from "@/lib/db";
 import { setSessionCookie, signSessionToken } from "@/lib/auth";
-import { db } from "@/lib/db";
 import { verifyPasskey } from "@/lib/passkey";
 import { publicUser } from "@/lib/users";
 import { formatValidationError, loginSchema } from "@/lib/validation/users";
@@ -23,19 +21,17 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 	}
 
 	const { username, passkey } = parsed.data;
-	const [user] = await db
-		.select()
-		.from(usuarios)
-		.where(eq(usuarios.username, username))
-		.limit(1);
-	if (!user || !verifyPasskey(passkey, user.passkeyHash)) {
+	const user = await prisma().user.findFirst({
+		where: { username },
+	});
+	if (!user || !verifyPasskey(passkey, user.passkey)) {
 		return Response.json({ error: "invalid_credentials" }, { status: 401 });
 	}
 
 	const token = await signSessionToken({
 		id: user.id,
 		username: user.username,
-		role: user.role,
+		role: user.role as "client" | "worker" | "admin",
 	});
 	setSessionCookie(cookies, token);
 	return Response.json({ user: publicUser(user) });

@@ -1,8 +1,6 @@
 import type { APIRoute } from "astro";
-import { and, eq, ne, or, type SQL } from "drizzle-orm";
-import { usuarios } from "@/db/schema";
 import { authorize } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { hashPasskey } from "@/lib/passkey";
 import { publicUser } from "@/lib/users";
 import {
@@ -26,11 +24,7 @@ export const GET: APIRoute = async ({ params, cookies }) => {
 	if (id === null)
 		return Response.json({ error: "invalid_id" }, { status: 400 });
 
-	const [row] = await db
-		.select()
-		.from(usuarios)
-		.where(eq(usuarios.id, id))
-		.limit(1);
+	const row = await prisma().user.findUnique({ where: { id } });
 	if (!row) return Response.json({ error: "not_found" }, { status: 404 });
 
 	return Response.json({ user: publicUser(row) });
@@ -57,50 +51,45 @@ export const PATCH: APIRoute = async ({ params, request, cookies }) => {
 	}
 	const data = parsed.data;
 
-	const [existing] = await db
-		.select()
-		.from(usuarios)
-		.where(eq(usuarios.id, id))
-		.limit(1);
+	const existing = await prisma().user.findUnique({ where: { id } });
 	if (!existing) return Response.json({ error: "not_found" }, { status: 404 });
 
-	if (data.email || data.username) {
-		const conditions: SQL[] = [];
-		if (data.email) conditions.push(eq(usuarios.email, data.email));
-		if (data.username) conditions.push(eq(usuarios.username, data.username));
-		const clashes = await db
-			.select({ email: usuarios.email, username: usuarios.username })
-			.from(usuarios)
-			.where(and(or(...conditions), ne(usuarios.id, id)));
-		for (const row of clashes) {
-			if (data.email && row.email === data.email)
-				return Response.json(
-					{ error: "conflict", field: "email" },
-					{ status: 409 },
-				);
-			if (data.username && row.username === data.username)
-				return Response.json(
-					{ error: "conflict", field: "username" },
-					{ status: 409 },
-				);
+	if (data.email) {
+		const emailClash = await prisma().user.findFirst({
+			where: { email: data.email, NOT: { id } },
+		});
+		if (emailClash) {
+			return Response.json(
+				{ error: "conflict", field: "email" },
+				{ status: 409 },
+			);
+		}
+	}
+	if (data.username) {
+		const usernameClash = await prisma().user.findFirst({
+			where: { username: data.username, NOT: { id } },
+		});
+		if (usernameClash) {
+			return Response.json(
+				{ error: "conflict", field: "username" },
+				{ status: 409 },
+			);
 		}
 	}
 
-	const [updated] = await db
-		.update(usuarios)
-		.set({
-			...(data.name !== undefined ? { name: data.name } : {}),
-			...(data.fullName !== undefined ? { fullName: data.fullName } : {}),
-			...(data.phone !== undefined ? { phone: data.phone } : {}),
-			...(data.email !== undefined ? { email: data.email } : {}),
-			...(data.username !== undefined ? { username: data.username } : {}),
-			...(data.role !== undefined ? { role: data.role } : {}),
-			...(data.passkey !== undefined
-				? { passkeyHash: hashPasskey(data.passkey) }
-				: {}),
-		})
-		.where(eq(usuarios.id, id))
-		.returning();
+	const updateData: Record<string, unknown> = {};
+	if (data.name !== undefined) updateData.name = data.name;
+	if (data.fullName !== undefined) updateData.fullName = data.fullName;
+	if (data.phone !== undefined) updateData.phone = data.phone;
+	if (data.email !== undefined) updateData.email = data.email;
+	if (data.username !== undefined) updateData.username = data.username;
+	if (data.role !== undefined) updateData.role = data.role;
+	if (data.passkey !== undefined) updateData.passkey = hashPasskey(data.passkey);
+
+	const updated = await prisma().user.update({
+		where: { id },
+		data: updateData,
+	});
 
 	return Response.json({ user: publicUser(updated) });
 };
@@ -115,13 +104,9 @@ export const DELETE: APIRoute = async ({ params, cookies }) => {
 	if (id === user.id)
 		return Response.json({ error: "cannot_delete_self" }, { status: 400 });
 
-	const [row] = await db
-		.select({ id: usuarios.id })
-		.from(usuarios)
-		.where(eq(usuarios.id, id))
-		.limit(1);
+	const row = await prisma().user.findUnique({ where: { id }, select: { id: true } });
 	if (!row) return Response.json({ error: "not_found" }, { status: 404 });
 
-	await db.delete(usuarios).where(eq(usuarios.id, id));
+	await prisma().user.delete({ where: { id } });
 	return Response.json({ ok: true });
 };

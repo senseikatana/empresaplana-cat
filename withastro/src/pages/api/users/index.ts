@@ -1,14 +1,15 @@
 import type { APIRoute } from "astro";
-import { eq, or } from "drizzle-orm";
-import { USUARIO_ROLES, type UsuarioRole, usuarios } from "@/db/schema";
+import type { UsuarioRole } from "@/interfaces/auth";
 import { authorize } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { hashPasskey } from "@/lib/passkey";
 import { publicUser } from "@/lib/users";
 import {
 	createUserSchema,
 	formatValidationError,
 } from "@/lib/validation/users";
+
+const USUARIO_ROLES = ["client", "worker", "admin"] as const;
 
 export const prerender = false;
 
@@ -22,8 +23,8 @@ export const GET: APIRoute = async ({ cookies, url }) => {
 		: undefined;
 
 	const rows = role
-		? await db.select().from(usuarios).where(eq(usuarios.role, role))
-		: await db.select().from(usuarios);
+		? await prisma().user.findMany({ where: { role } })
+		: await prisma().user.findMany();
 	return Response.json({ users: rows.map(publicUser) });
 };
 
@@ -44,37 +45,37 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 	}
 	const data = parsed.data;
 
-	const conflicts = await db
-		.select({ email: usuarios.email, username: usuarios.username })
-		.from(usuarios)
-		.where(
-			or(eq(usuarios.email, data.email), eq(usuarios.username, data.username)),
+	const existingEmail = await prisma().user.findUnique({
+		where: { email: data.email },
+	});
+	if (existingEmail) {
+		return Response.json(
+			{ error: "conflict", field: "email" },
+			{ status: 409 },
 		);
-	for (const row of conflicts) {
-		if (row.email === data.email)
-			return Response.json(
-				{ error: "conflict", field: "email" },
-				{ status: 409 },
-			);
-		if (row.username === data.username)
-			return Response.json(
-				{ error: "conflict", field: "username" },
-				{ status: 409 },
-			);
 	}
 
-	const [created] = await db
-		.insert(usuarios)
-		.values({
+	const existingUsername = await prisma().user.findUnique({
+		where: { username: data.username },
+	});
+	if (existingUsername) {
+		return Response.json(
+			{ error: "conflict", field: "username" },
+			{ status: 409 },
+		);
+	}
+
+	const created = await prisma().user.create({
+		data: {
 			name: data.name,
 			fullName: data.fullName,
 			phone: data.phone,
 			email: data.email,
-			passkeyHash: hashPasskey(data.passkey),
+			passkey: hashPasskey(data.passkey),
 			username: data.username,
 			role: data.role,
-		})
-		.returning();
+		},
+	});
 
 	return Response.json({ user: publicUser(created) }, { status: 201 });
 };

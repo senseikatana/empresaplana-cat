@@ -1,4 +1,4 @@
-import type { UsuarioRole } from "@/db/schema";
+export type UsuarioRole = "client" | "worker" | "admin";
 
 export interface SessionUser {
 	id: number;

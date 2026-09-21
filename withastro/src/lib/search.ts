@@ -1,5 +1,4 @@
-import { asc } from "drizzle-orm";
-import { lineConnections, lines, schedules } from "@/db/schema";
+import { prisma } from "@/lib/db";
 import type {
 	Departure,
 	LineSummary,
@@ -9,7 +8,6 @@ import type {
 	ThroughPair,
 	TransferOption,
 } from "@/interfaces/search";
-import { db } from "@/lib/db";
 
 const MAX_DEPARTURES_SHOWN = 24;
 const MAX_DEPARTURES_PER_LEG = 6;
@@ -92,19 +90,19 @@ export async function searchRoutes(
 	const normDest = normalize(destination);
 
 	const lineInfo = new Map<number, { name: string; pdfUrl: string }>();
-	for (const row of await db
-		.select({ id: lines.id, name: lines.name, pdfUrl: lines.pdfUrl })
-		.from(lines)) {
+	const lines = await prisma().line.findMany({
+		select: { id: true, name: true, pdfUrl: true },
+	});
+	for (const row of lines) {
 		lineInfo.set(row.id, { name: row.name, pdfUrl: row.pdfUrl });
 	}
 
-	const rows = await db
-		.select()
-		.from(schedules)
-		.orderBy(asc(schedules.departureTime));
-	const loaded: LoadedSchedule[] = rows.map((row) => ({
+	const schedules = await prisma().schedulesOnLine.findMany({
+		orderBy: { departureTime: "asc" },
+	});
+	const loaded: LoadedSchedule[] = schedules.map((row) => ({
 		lineId: row.lineId,
-		stops: JSON.parse(row.stopsJson) as Stop[],
+		stops: (row.stopsJson as unknown as Stop[]),
 	}));
 
 	const directMap = new Map<number, LineSummary>();
@@ -250,7 +248,7 @@ export async function searchRoutes(
 
 	const through: ThroughJourney[] = [];
 	if (normOrigin !== normDest) {
-		const connections = await db.select().from(lineConnections);
+		const connections = await prisma().lineConnection.findMany();
 		if (connections.length > 0) {
 			const byLine = new Map<number, LoadedSchedule[]>();
 			for (const schedule of loaded) {

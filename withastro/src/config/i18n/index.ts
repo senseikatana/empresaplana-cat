@@ -2,6 +2,7 @@ import type { I18nDictionary, Locale } from "@/interfaces";
 import ca from "./ca.json";
 import en from "./en.json";
 import es from "./es.json";
+import fr from "./fr.json";
 
 export type {
 	DictionaryProps,
@@ -12,9 +13,9 @@ export type {
 
 export const DEFAULT_LOCALE: Locale = "ca";
 
-export const LOCALES: readonly Locale[] = ["ca", "es", "en"] as const;
+export const LOCALES: readonly Locale[] = ["ca", "es", "en", "fr"] as const;
 
-const dictionaries: Record<Locale, I18nDictionary> = { ca, en, es };
+const dictionaries: Record<Locale, I18nDictionary> = { ca, en, es, fr };
 
 export function isLocale(value: string | undefined | null): value is Locale {
 	if (!value) return false;
