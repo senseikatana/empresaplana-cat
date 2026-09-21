@@ -1,3 +1,5 @@
+import type { NavigationMenuItem } from "@nuxt/ui";
+
 const isNotificationsSlideoverOpen = ref(false);
 const isCommandPaletteOpen = ref(false);
 
