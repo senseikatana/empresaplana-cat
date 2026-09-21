@@ -35,15 +35,7 @@ export function getDictionary(locale: Locale): I18nDictionary {
 	return dictionaries[locale];
 }
 
-type Join<K extends string, P extends string> = P extends "" ? K : `${P}.${K}`;
-
-type StringLeafPaths<T, P extends string = ""> = {
-	[K in keyof T & string]: T[K] extends string
-		? Join<K, P>
-		: StringLeafPaths<T[K], Join<K, P>>;
-}[keyof T & string];
-
-export type DictionaryKey = StringLeafPaths<I18nDictionary>;
+export type DictionaryKey = string;
 
 export function t(locale: Locale, key: DictionaryKey): string {
 	const parts = key.split(".");

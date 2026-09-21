@@ -21,6 +21,7 @@ export interface I18nDictionary {
 	about: About;
 	legal: Legal;
 	busTracking: BusTracking;
+	app: Record<string, any>;
 }
 export interface LocalizedPageProps {
 	locale: Locale;

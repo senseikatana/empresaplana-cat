@@ -7,7 +7,7 @@ const localePath = useLocalePath();
 const switchLocalePath = useSwitchLocalePath();
 const route = useRoute();
 
-const { isNotificationsSlideoverOpen, toggleCommandPalette } = useDashboard();
+const { isNotificationsSlideoverOpen, toggleNotifications, toggleCommandPalette } = useDashboard();
 
 const { data } = await useFetch<{
 	user: { id: number; username: string; name?: string; role: string };
