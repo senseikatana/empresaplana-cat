@@ -10,6 +10,7 @@
 			"prisma/**/*.ts",
 			"nuxt.config.ts",
 			"app.config.ts",
+			"router.ts",
 			"package.json",
 			"tsconfig.json",
 			"biome.json"

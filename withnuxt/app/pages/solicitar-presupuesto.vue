@@ -7,6 +7,12 @@ const localePath = useLocalePath();
 
 const loc = computed(() => locale.value as "ca" | "es" | "en" | "fr");
 
+function pick<T extends Record<string, string>>(map: T, key: string): string {
+	const direct = map[key as keyof T];
+	if (direct) return direct;
+	return map.en ?? map.es ?? map.ca ?? Object.values(map)[0] ?? "";
+}
+
 useHead({ title: () => t("discretionary.hero.cta") });
 useSeoMeta({ description: () => t("discretionary.cta.subtitle") });
 
@@ -25,7 +31,7 @@ const contactCards = computed(() => [
 		icon: "location_city",
 		label: p.phone,
 		href: `tel:${p.phone.replace(/\s/g, "")}`,
-		sublabel: p.area[loc.value],
+		sublabel: pick(p.area, loc.value),
 	})),
 	{
 		icon: "mail",
@@ -57,7 +63,7 @@ const error = ref<string | null>(null);
 const sent = ref(false);
 
 function label(f: (typeof presupuesto.fields)[number]): string {
-	return f.labels[loc.value] ?? f.id;
+	return pick(f.labels, loc.value) || f.id;
 }
 
 async function submit() {
@@ -137,12 +143,12 @@ async function submit() {
 		<!-- Quote form -->
 		<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pb-stack-lg">
 			<section class="mx-auto max-w-3xl rounded-xl border border-outline-variant bg-surface-container-lowest p-stack-md shadow-ambient md:p-stack-lg">
-				<h2 class="mb-stack-sm font-headline-lg text-headline-lg font-bold text-deep-navy">{{ presupuesto.title[loc] }}</h2>
-				<p class="mb-stack-lg text-body-md text-on-surface-variant">{{ presupuesto.sections.service[loc] }}</p>
+				<h2 class="mb-stack-sm font-headline-lg text-headline-lg font-bold text-deep-navy">{{ pick(presupuesto.title, loc) }}</h2>
+				<p class="mb-stack-lg text-body-md text-on-surface-variant">{{ pick(presupuesto.sections.service, loc) }}</p>
 
 				<form class="space-y-stack-md" @submit.prevent="submit">
 					<fieldset class="space-y-stack-sm">
-						<legend class="mb-stack-sm font-headline-md text-headline-md font-bold text-deep-navy">{{ presupuesto.sections.contact[loc] }}</legend>
+						<legend class="mb-stack-sm font-headline-md text-headline-md font-bold text-deep-navy">{{ pick(presupuesto.sections.contact, loc) }}</legend>
 						<div class="grid gap-stack-sm md:grid-cols-2">
 							<label v-for="f in contactFields" :key="f.id" class="space-y-1 text-label-md font-semibold text-on-surface">
 								<span>{{ label(f) }}{{ f.required ? " *" : "" }}</span>
@@ -157,7 +163,7 @@ async function submit() {
 					</fieldset>
 
 					<fieldset class="space-y-stack-sm">
-						<legend class="mb-stack-sm font-headline-md text-headline-md font-bold text-deep-navy">{{ presupuesto.sections.service[loc] }}</legend>
+								<legend class="mb-stack-sm font-headline-md text-headline-md font-bold text-deep-navy">{{ pick(presupuesto.sections.service, loc) }}</legend>
 						<div class="grid gap-stack-sm md:grid-cols-2">
 							<label v-for="f in serviceFields" :key="f.id" :class="['space-y-1 text-label-md font-semibold text-on-surface', f.type === 'textarea' && 'md:col-span-2']">
 								<span>{{ label(f) }}{{ f.required ? " *" : "" }}</span>
@@ -173,8 +179,8 @@ async function submit() {
 									class="w-full rounded border border-outline-variant bg-surface px-stack-sm py-2 focus:border-coastal-teal focus:ring-1 focus:ring-coastal-teal outline-none transition-colors"
 									:required="f.required"
 								>
-									<option value="">{{ f.placeholder?.[loc] ?? "" }}</option>
-									<option v-for="r in reasons" :key="r.id" :value="r.id">{{ r.labels[loc] }}</option>
+									<option value="">{{ f.placeholder ? pick(f.placeholder, loc) : "" }}</option>
+									<option v-for="r in reasons" :key="r.id" :value="r.id">{{ pick(r.labels, loc) }}</option>
 								</select>
 								<input
 									v-else
@@ -189,14 +195,14 @@ async function submit() {
 
 					<label class="flex gap-2 text-body-md text-on-surface-variant">
 						<input v-model="consent" type="checkbox" required />
-						<span>{{ presupuesto.consent[loc] }}</span>
+						<span>{{ pick(presupuesto.consent, loc) }}</span>
 					</label>
 
-					<UAlert v-if="sent" color="success" variant="soft" :title="presupuesto.success[loc]" />
+					<UAlert v-if="sent" color="success" variant="soft" :title="pick(presupuesto.success, loc)" />
 					<UAlert v-if="error" color="error" variant="soft" :title="error" />
 
 					<UButton type="submit" :loading="pending" class="bg-energetic-orange text-on-primary font-semibold min-h-[48px]">
-						{{ presupuesto.submit[loc] }}
+						{{ pick(presupuesto.submit, loc) }}
 					</UButton>
 				</form>
 			</section>

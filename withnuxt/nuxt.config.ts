@@ -41,16 +41,12 @@ export default defineNuxtConfig({
 		defaultLocale: "ca",
 		strategy: "prefix_except_default",
 		baseUrl: "https://empresaplana.cat",
-		lazy: true,
 		locales: [
 			{ code: "ca", language: "ca", name: "CA", file: "ca.json" },
 			{ code: "es", language: "es", name: "ES", file: "es.json" },
 			{ code: "en", language: "en", name: "EN", file: "en.json" },
 			{ code: "fr", language: "fr", name: "FR", file: "fr.json" },
 		],
-		bundle: {
-			optimizeTranslationDirective: false,
-		},
 	},
 	nitro: {
 		// Default = Node (Render). Override with NITRO_PRESET=cloudflare_pages

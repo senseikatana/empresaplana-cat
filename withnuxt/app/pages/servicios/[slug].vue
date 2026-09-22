@@ -15,14 +15,31 @@ if (!service) {
 // El contenido real tiene locales incompletos (algunos solo ca o solo es).
 // Fallback: idioma actual → es → ca.
 const loc = computed(() => {
-	const l = locale.value as "ca" | "es" | "en" | "fr";
-	if (service.locales[l]) return l;
-	if (service.locales.es) return "es";
-	if (service.locales.ca) return "ca";
+	const locales = service.locales as Record<string, unknown>;
+	const l = locale.value;
+	if (locales[l]) return l as "ca" | "es" | "en" | "fr";
+	if (locales.es) return "es";
+	if (locales.ca) return "ca";
 	return "es";
 });
 
-const content = computed(() => service.locales[loc.value]);
+const content = computed(
+	() =>
+		(
+			service.locales as Record<
+				string,
+				| {
+						title: string;
+						tagline: string;
+						sectionTitle: string;
+						body: string[];
+						imageUrl: string;
+						imageCaption?: string;
+				  }
+				| undefined
+			>
+		)[loc.value],
+);
 useHead({ title: () => content.value?.title ?? "" });
 useSeoMeta({ description: () => content.value?.tagline ?? "" });
 

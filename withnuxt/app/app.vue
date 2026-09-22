@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { locale, t } = useI18n();
-const localeHead = useLocaleHead({ dir: true, key: "id", seo: true });
+const localeHead = useLocaleHead({ dir: true, seo: true });
 
 const ogLocale = computed(
 	() =>

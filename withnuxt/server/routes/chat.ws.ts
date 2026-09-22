@@ -49,12 +49,13 @@ function getCookieValue(
 }
 
 export default defineWebSocketHandler({
-	async upgrade(request, context) {
+	async upgrade(request) {
 		const session = await sessionFromUpgrade(request.headers);
 		if (!session) {
 			throw new Error("No autenticat");
 		}
-		context.session = session;
+		(request as unknown as { context: Record<string, unknown> }).context.session =
+			session;
 	},
 
 	open(peer) {

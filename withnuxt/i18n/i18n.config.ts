@@ -1,8 +1,4 @@
-// vue-i18n config. El contenido real de Empresa Plana es texto plano con
-// `@` (emails) y `{n}` literales (p.ej. "Delegación {n}"), que vue-i18n
-// interpreta como sintaxis de "linked message" e interpolación. Un compiler
-// passthrough devuelve el mensaje tal cual, evitando errores de parseo sin
-// alterar los diccionarios.
-export default defineI18nConfig(() => ({
-	messageCompiler: (message: string) => () => message,
-}));
+// vue-i18n config. Los emails usan literal interpolation `{'@'}` en los
+// diccionarios (ver i18n/locales/*.json); el compiler default de vue-i18n
+// los evalúa a `@` y respeta las interpolaciones nombradas `{name}`/`{n}`.
+export default defineI18nConfig(() => ({}));
