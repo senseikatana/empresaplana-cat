@@ -1,5 +1,5 @@
 ---
-import type { LineSummary, Departure } from "@/interfaces/search";
+import type { LineSummary } from "@/interfaces/search";
 import type { RoutesResults } from "@/interfaces";
 
 interface Props {
@@ -7,11 +7,6 @@ interface Props {
   t: RoutesResults;
   index?: number;
   legLabel?: string | null;
-}
-
-interface DepartureWithTimes extends Departure {
-  departureTime: string;
-  arrivalTime: string;
 }
 
 const { line, t, index = 0, legLabel = null } = Astro.props;

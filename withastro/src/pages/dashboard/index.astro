@@ -1,8 +1,5 @@
 ---
-import DashboardLayout from "@/layouts/DashboardLayout.astro";
 import { getSession } from "@/lib/auth";
-import { prisma } from "@/lib/db";
-import { getLocale, getDictionary } from "@/config/i18n";
 import type { UsuarioRole } from "@/interfaces/auth";
 
 export const prerender = false;
@@ -11,9 +8,6 @@ const session = await getSession(Astro.cookies);
 if (!session) {
 	return Astro.redirect("/dashboard/login");
 }
-
-const locale = getLocale(Astro.url.searchParams.get("lang"));
-const dict = getDictionary(locale);
 
 // Redirect by role
 const roleHome: Record<UsuarioRole, string> = {
