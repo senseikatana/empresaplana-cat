@@ -1,8 +1,8 @@
-import { createClient } from "@libsql/client";
 import { SignJWT } from "jose";
 import { createPrivateKey } from "node:crypto";
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import { createDb } from "./lib/db.mjs";
 import { ROOT, loadEnv, parseSpreadsheet } from "./lib/sheets-format.mjs";
 
 const env = loadEnv();
@@ -72,30 +72,27 @@ console.log(
 	`2) parseadas ${lines.size} líneas, ${schedules.length} salidas, ${connections.length} conexiones`,
 );
 
-const db = createClient({
-	url: env.TURSO_DATABASE_URL,
-	authToken: env.TURSO_AUTH_TOKEN,
-});
+const db = createDb(env);
+await db.connect();
 
-console.log("3) aplicando schema y limpiando ...");
-await db.executeMultiple(
-	readFileSync(path.join(ROOT, "db", "schema.sql"), "utf8"),
-);
-await db.execute("DELETE FROM line_connections");
-await db.execute("DELETE FROM schedules");
-await db.execute("DELETE FROM lines");
+console.log("3) limpiando tablas ...");
+await db.query('DELETE FROM "LineConnection"');
+await db.query('DELETE FROM "SchedulesOnLine"');
+await db.query('DELETE FROM "Line"');
 
-const lineStmts = [...lines.entries()].map(([id, l]) => ({
-	sql: "INSERT INTO lines (id, name, pdf_url) VALUES (?, ?, ?)",
-	args: [id, l.name, l.pdfUrl],
-}));
-await db.batch(lineStmts, "write");
+for (const [id, l] of lines.entries()) {
+	await db.query('INSERT INTO "Line" (id, name, "pdfUrl") VALUES ($1, $2, $3)', [
+		id,
+		l.name,
+		l.pdfUrl,
+	]);
+}
 console.log(`   ${lines.size} líneas insertadas`);
 
-for (let i = 0; i < schedules.length; i += 25) {
-	const chunk = schedules.slice(i, i + 25).map((s) => ({
-		sql: "INSERT INTO schedules (line_id, origin_town, destination_town, departure_time, arrival_time, duration, stops_json) VALUES (?, ?, ?, ?, ?, ?, ?)",
-		args: [
+for (const s of schedules) {
+	await db.query(
+		'INSERT INTO "SchedulesOnLine" ("lineId", "originTown", "destinationTown", "departureTime", "arrivalTime", "duration", "stopsJson") VALUES ($1, $2, $3, $4, $5, $6, $7)',
+		[
 			s.lineId,
 			s.originTown,
 			s.destinationTown,
@@ -104,26 +101,21 @@ for (let i = 0; i < schedules.length; i += 25) {
 			s.duration,
 			JSON.stringify(s.stops),
 		],
-	}));
-	await db.batch(chunk, "write");
+	);
 }
 console.log(`   ${schedules.length} salidas insertadas`);
 
-if (connections.length > 0) {
-	const connChunks = [];
-	for (let i = 0; i < connections.length; i += 25) {
-		connChunks.push(
-			connections.slice(i, i + 25).map((c) => ({
-				sql: "INSERT INTO line_connections (from_line_id, at_stop, to_line_id, wait_min) VALUES (?, ?, ?, ?)",
-				args: [c.fromLineId, c.atStop, c.toLineId, c.waitMin],
-			})),
-		);
-	}
-	for (const chunk of connChunks) await db.batch(chunk, "write");
-	console.log(`   ${connections.length} conexiones insertadas`);
+for (const c of connections) {
+	await db.query(
+		'INSERT INTO "LineConnection" ("fromLineId", "atStop", "toLineId", "waitMin") VALUES ($1, $2, $3, $4)',
+		[c.fromLineId, c.atStop, c.toLineId, c.waitMin],
+	);
 }
+console.log(`   ${connections.length} conexiones insertadas`);
 
-const counts = await db.execute(
-	"SELECT (SELECT count(*) FROM lines) AS l, (SELECT count(*) FROM schedules) AS s, (SELECT count(*) FROM line_connections) AS c",
+const counts = await db.query(
+	'SELECT (SELECT count(*) FROM "Line") AS l, (SELECT count(*) FROM "SchedulesOnLine") AS s, (SELECT count(*) FROM "LineConnection") AS c',
 );
 console.log("4) verificación:", counts.rows[0]);
+
+await db.end();

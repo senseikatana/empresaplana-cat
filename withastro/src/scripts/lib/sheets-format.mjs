@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 
 export const ROOT = path.dirname(
-	path.dirname(path.dirname(fileURLToPath(import.meta.url))),
+	path.dirname(path.dirname(path.dirname(fileURLToPath(import.meta.url)))),
 );
 export const LINEAS_TAB = "LÍNEAS";
 export const CONEXIONES_TAB = "CONEXIONES";

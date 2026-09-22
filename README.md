@@ -54,14 +54,14 @@ empresaplana-cat/
 # 📋 Tareas pendientes — 22/09/2026
 
 ## 1. Revisar lo creado
-- [ ] Revisar el código generado en `withastro/` (dashboard, API routes, middleware, layout)
+- [X] Revisar el código generado en `withastro/` (dashboard, API routes, middleware, layout)
 - [ ] Revisar el fix de `toggleNotifications` en `withnuxt/app/layouts/dashboard.vue`
 - [ ] Abrir ambos proyectos en VSCode y confirmar que todo se ve bien
 
 ## 2. Navegar y probar
-- [ ] Levantar `bun run dev` en Astro y navegar todas las páginas del dashboard
-- [ ] Levantar `pnpm run dev` en Nuxt y navegar todas las páginas del dashboard
-- [ ] Probar auth flow completo con las 3 cuentas demo (admin/trabajador/cliente)
+- [X] Levantar `bun run dev` en Astro y navegar todas las páginas del dashboard
+- [X] Levantar `pnpm run dev` en Nuxt y navegar todas las páginas del dashboard
+- [X] Probar auth flow completo con las 3 cuentas demo (admin/trabajador/cliente)
 - [ ] Verificar que las páginas protegidas redirigen a login sin sesión
 - [ ] Comprobar i18n en los 4 locales (ca/es/en/fr)
 

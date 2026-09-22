@@ -1,6 +1,6 @@
-import { createClient } from "@libsql/client";
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { createDb } from "./lib/db.mjs";
 import {
 	ROOT,
 	buildSpreadsheet,
@@ -9,41 +9,42 @@ import {
 } from "./lib/sheets-format.mjs";
 
 const env = loadEnv();
-const db = createClient({
-	url: env.TURSO_DATABASE_URL,
-	authToken: env.TURSO_AUTH_TOKEN,
-});
+const db = createDb(env);
+await db.connect();
 
-const linesRes = await db.execute(
-	"SELECT id, name, pdf_url FROM lines ORDER BY id",
+const linesRes = await db.query(
+	'SELECT id, name, "pdfUrl" FROM "Line" ORDER BY id',
 );
-const schedRes = await db.execute(
-	"SELECT line_id, stops_json, departure_time FROM schedules ORDER BY departure_time",
+const schedRes = await db.query(
+	'SELECT "lineId", "stopsJson", "departureTime" FROM "SchedulesOnLine" ORDER BY "departureTime"',
 );
-const connRes = await db.execute(
-	"SELECT from_line_id, at_stop, to_line_id, wait_min FROM line_connections ORDER BY from_line_id, to_line_id",
+const connRes = await db.query(
+	'SELECT "fromLineId", "atStop", "toLineId", "waitMin" FROM "LineConnection" ORDER BY "fromLineId", "toLineId"',
 );
 
 const lines = linesRes.rows.map((r) => ({
 	id: Number(r.id),
 	name: String(r.name),
-	pdfUrl: String(r.pdf_url),
+	pdfUrl: String(r.pdfUrl),
 }));
 const connections = connRes.rows.map((r) => ({
-	fromLineId: Number(r.from_line_id),
-	atStop: String(r.at_stop),
-	toLineId: Number(r.to_line_id),
-	waitMin: Number(r.wait_min),
+	fromLineId: Number(r.fromLineId),
+	atStop: String(r.atStop),
+	toLineId: Number(r.toLineId),
+	waitMin: Number(r.waitMin),
 }));
 const schedulesByLine = new Map();
 for (const r of schedRes.rows) {
-	const lineId = Number(r.line_id);
-	const stops = JSON.parse(String(r.stops_json));
+	const lineId = Number(r.lineId);
+	const raw = r.stopsJson;
+	const stops = typeof raw === "string" ? JSON.parse(raw) : raw;
 	if (!schedulesByLine.has(lineId)) schedulesByLine.set(lineId, []);
 	schedulesByLine
 		.get(lineId)
-		.push({ departureTime: String(r.departure_time), stops });
+		.push({ departureTime: String(r.departureTime), stops });
 }
+
+await db.end();
 
 const out = buildSpreadsheet(lines, schedulesByLine, connections);
 const outDir = path.join(ROOT, "sheets-export");

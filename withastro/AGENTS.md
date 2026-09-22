@@ -9,10 +9,11 @@ exported as HTML into `stitch-export/`, then transformed into Astro pages.
 - Astro 7 + `@astrojs/node` adapter + `@astrojs/react` (islands)
 - Package manager: **bun** (`bun.lock` present)
 - Node >= 22.12
-- Database: **Turso** (libsql) via `@libsql/client` + **Drizzle ORM**
-  (`drizzle-orm` + `drizzle-kit`), validation with **zod v4**, auth tokens with
+- Database: **InsForge** (Postgres, proyecto `empresaplana.cat`) via
+  **Prisma 7** (`prisma-client` generator, output `generated/prisma/`) +
+  `@prisma/adapter-pg` + `pg`. Validation with **zod v4**, auth tokens with
   **jose** (HS256 JWT in an httpOnly cookie). Credentials in `.env`
-  (`TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`, `AUTH_SECRET`).
+  (`DATABASE_URL`, `AUTH_SECRET`).
 - Styling: **Tailwind CSS v4 build-time** via `@tailwindcss/vite` (no CDN) +
   Geist + Material Symbols. Theme lives in `src/styles/global.css` (`@theme`
   block mirroring `src/assets/DESIGN.md`; brand colors exposed as CSS custom
@@ -68,32 +69,28 @@ Canonical tokens live in `src/assets/DESIGN.md` (mirror of the Stitch
   texts (notice, cookies, privacy) and the bus-tracking UI, formerly scraped
   into `src/data/`.
 
-## Database (Turso + Drizzle)
+## Database (InsForge + Prisma)
 
-- `db/schema.ts` — Drizzle schema: `lines`, `schedules` (route timetables,
-  stops denormalized in `stops_json`), `line_connections` (same-bus line
-  chaining: from_line_id → at_stop label → to_line_id, wait_min default 0)
-  and `usuarios` (name, full_name, phone, email unique, passkey_hash, username
-  unique, role enum `client|worker|admin`, created_at). `db/schema.sql` is the
-  legacy bootstrap for `lines`/`schedules`/`line_connections` (idempotent
-  `IF NOT EXISTS`); new tables go through Drizzle migrations in `drizzle/`.
-- `drizzle.config.ts` — `dialect: "turso"`, reads `.env`. Gotcha:
-  `drizzle-kit migrate` hangs against Turso under bun; apply migrations via
-  the Turso HTTP `/v2/pipeline` API (statements `{ q, params }`) and record
-  the sha256 hash of the file in `__drizzle_migrations`. `drizzle-kit
-  generate` works normally.
-- `src/lib/db.ts` — exports `client` (raw libsql) and `db` (drizzle).
-- Seed scripts (`bun scripts/seed.mjs`, `bun scripts/seed-users.mjs`): scrape
-  the real site (`empresaplana.cat/descargas`) in BOTH directions per line
-  (seasonal lines return 0 rows out of season, so the seeder tries
-  15/08/2026, 15/09/2026 and 15/11/2026 and keeps the richest response). Line
-  names come from the resolved PDF filename. Idempotent (DELETE + insert).
+- `prisma/schema.prisma` — Prisma 7 schema: los 16 modelos compartidos con
+  Nuxt (`User`, `Route`, `Stop`, `Schedule`, `Bus`, `Driver`, `Notification`,
+  `Activity`, `Budget`, `Report`, `Office`, `FavoriteRoute`, `RecentSearch`,
+  `Conversation`, `ConversationParticipant`, `Message`) más 3 tablas legacy
+  de búsqueda de líneas: `Line` (id = id de la hoja), `SchedulesOnLine`
+  (paradas denormalizadas en `stopsJson`) y `LineConnection` (encadenado
+  mismo-bus: fromLineId → atStop → toLineId, waitMin default 0).
+- `prisma.config.ts` — `dotenv/config` + `env("DATABASE_URL")`.
+- `src/lib/db.ts` — singleton lazy `prisma()` con `PrismaPg` + `import
+  "dotenv/config"` (Astro NO carga `.env` en `process.env` automáticamente).
+- `src/lib/get-public-user.ts` — helper que devuelve `PublicUser` (cast de
+  role incluido) para las páginas del dashboard.
+- Seed: `bun run db:seed` (`prisma/seed.ts`) — usuarios demo upsert. La
+  flota completa se siembra desde `withnuxt/prisma/seed.ts` contra la misma
+  DB InsForge compartida.
 
 ## Google Sheets sync
 
-- Source of truth for line stops is a Google Sheets spreadsheet; Turso stays
-  the read model for the search. `scripts/seed.mjs` (scraper) is only a
-  bootstrap — add/edit missing lines in the sheet and sync. Template (see
+- Source of truth for line stops is a Google Sheets spreadsheet; Postgres
+  (InsForge) stays the read model for the search. Template (see
   `sheets-export/` for a real dump):
   - Tab `LÍNEAS`: columns `id | nombre | pdf_url`.
   - One tab per line named `{id} - {nombre}`. Row 1 = stops as
@@ -103,16 +100,19 @@ Canonical tokens live in `src/assets/DESIGN.md` (mirror of the Stitch
   - Tab `CONEXIONES`: columns `desde_linea | parada | hasta_linea | espera_min`
     — same-bus line chaining (e.g. `46 | Cambrils — Psg. d'Albert | 11 | 0`).
 - Credentials in `.env`: `GOOGLE_SERVICE_ACCOUNT_JSON` (path to the service
-  account key JSON, relative to repo root) + `GOOGLE_SPREADSHEET_ID`. Share
-  the spreadsheet with the service account email (reader). The service
-  account JWT (RS256) is signed with `jose` and exchanged for an OAuth token —
-  no extra deps.
-- `bun scripts/sync-sheets.mjs` (`bun run sync:sheets`) — reads the
-  spreadsheet (Sheets API `values`) and REPLACES `lines`/`schedules` in Turso
-  (idempotent).
-- `bun scripts/export-sheets.mjs` (`bun run export:sheets`) — dumps current
-  Turso data to `sheets-export/*.csv` in the exact template format (import
-  into Google Sheets to bootstrap). Round-trip is lossless (verified 710/710).
+  account key JSON, e.g. `sheets-credentials.json` — gitignored) +
+  `GOOGLE_SPREADSHEET_ID`. Share the spreadsheet with the service account
+  email (reader for sync, editor for bootstrap). The service account JWT
+  (RS256) is signed with `jose` and exchanged for an OAuth token — no extra
+  deps. GCP project: `steam-strategy-509408-s7`, SA `sheets-sync`.
+- `bun run sync:sheets` (`src/scripts/sync-sheets.mjs`) — reads the
+  spreadsheet (Sheets API `values`) and REPLACES `Line`/`SchedulesOnLine`/
+  `LineConnection` in Postgres (idempotent; pg crudo, no ORM).
+- `bun run export:sheets` (`src/scripts/export-sheets.mjs`) — dumps current
+  Postgres data to `sheets-export/*.csv` in the exact template format (import
+  into Google Sheets to bootstrap).
+- `bun run bootstrap:sheets` (`src/scripts/bootstrap-sheets.mjs`) — writes
+  the DB dump INTO a Google Spreadsheet (creates/renames tabs, clears values).
 - Grid caveats: stops are per-line fixed (header); departures whose stops are
   a subset of the header survive; `lat`/`lon` are not carried through the
   sheet.
@@ -145,8 +145,8 @@ Canonical tokens live in `src/assets/DESIGN.md` (mirror of the Stitch
 - API: `POST /api/auth/login|logout`, `GET /api/auth/me`, `GET|POST
   /api/users` (admin), `GET|PATCH|DELETE /api/users/[id]` (admin; can't
   delete yourself). `passkey_hash` is never exposed.
-- Demo users (seed-users): `admin/ADMIN1234`, `worker/WORKER12`,
-  `client/CLIENT01`. Google Auth is planned as a future addition.
+- Demo users (seed, passkey `12345678`): `admin`, `trabajador`, `cliente`.
+  Google Auth is planned as a future addition.
 
 ## Bus tracking (Glovo-style)
 

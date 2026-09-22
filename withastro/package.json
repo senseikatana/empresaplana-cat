@@ -6,14 +6,14 @@
 		"node": ">=22.12.0"
 	},
 	"scripts": {
-		"dev": "bun run dev",
-		"build": "bun run build",
+		"dev": "astro dev",
+		"build": "astro build",
 		"preview": "astro preview",
 		"astro": "astro",
 		"sync:sheets": "bun src/scripts/sync-sheets.mjs",
 		"export:sheets": "bun src/scripts/export-sheets.mjs",
 		"bootstrap:sheets": "bun src/scripts/bootstrap-sheets.mjs",
-		"test": "bun run test",
+		"test": "astro check",
 		"format": "biome format --write .",
 		"format:check": "biome format .",
 		"lint": "biome lint .",

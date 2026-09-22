@@ -19,7 +19,7 @@ model User {
 	passkey        String          @db.VarChar(128)
 	name           String          @db.VarChar(60)
 	fullName       String          @db.VarChar(120)
-	email          String          @unique @db.VarChar(200)
+	email          String          @db.VarChar(200)
 	phone          String          @db.VarChar(30)
 	role           String          @default("client") @db.VarChar(20)
 	totpSecret     String?         @db.VarChar(100)

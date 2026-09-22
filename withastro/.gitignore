@@ -26,6 +26,10 @@ bun-debug.log*
 .env.local
 .env.*.local
 
+# Credenciales Google (service account JSON) y dumps de sheets
+sheets-credentials.json
+sheets-export/
+
 # Cache
 .cache/
 .parcel-cache/

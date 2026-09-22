@@ -1,3 +1,4 @@
+import "dotenv/config";
 import type { AstroCookies } from "astro";
 import { jwtVerify, SignJWT } from "jose";
 import type { SessionUser, UsuarioRole } from "@/interfaces/auth";
@@ -7,7 +8,7 @@ const SESSION_MAX_AGE = 60 * 60 * 24 * 7;
 const ISSUER = "empresaplana";
 
 function secret(): Uint8Array {
-	const value = import.meta.env.AUTH_SECRET;
+	const value = process.env.AUTH_SECRET;
 	if (!value) {
 		throw new Error(
 			"AUTH_SECRET is not set. Copy .env.example to .env and set a long random secret.",

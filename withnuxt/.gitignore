@@ -32,6 +32,9 @@ pnpm-debug.log*
 !.env.production
 !.nv.template
 .dev.vars
+
+# Google OAuth client secret (never commit)
+google.client.json
 # macOS-specific files
 .DS_Store
 
