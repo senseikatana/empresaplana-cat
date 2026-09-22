@@ -20,6 +20,11 @@ export default defineConfig({
 	},
 	vite: {
 		plugins: [tailwindcss()],
+		server: {
+			// Acepta los tunnels de cloudflared (subdominios *.trycloudflare.com
+			// aleatorios en cada arranque). Sin esto Vite bloquea el Host header.
+			allowedHosts: [".trycloudflare.com"],
+		},
 		resolve: {
 			alias: {
 				"@": fileURLToPath(new URL("./src", import.meta.url)),

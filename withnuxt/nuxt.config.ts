@@ -5,6 +5,13 @@ export default defineNuxtConfig({
 	devtools: { enabled: true },
 	modules: ["@nuxt/ui", "@nuxt/fonts", "@nuxtjs/i18n"],
 	css: ["~/assets/css/main.css"],
+	vite: {
+		server: {
+			// Acepta los tunnels de cloudflared (subdominios *.trycloudflare.com
+			// aleatorios en cada arranque). Sin esto Vite bloquea el Host header.
+			allowedHosts: [".trycloudflare.com"],
+		},
+	},
 	fonts: {
 		families: [{ name: "Geist", provider: "google" }],
 	},

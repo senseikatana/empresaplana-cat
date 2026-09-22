@@ -9,6 +9,7 @@
 		"dev": "astro dev",
 		"build": "astro build",
 		"preview": "astro preview",
+		"tunnel": "cloudflared tunnel --url http://localhost:4321",
 		"astro": "astro",
 		"sync:sheets": "bun src/scripts/sync-sheets.mjs",
 		"export:sheets": "bun src/scripts/export-sheets.mjs",

@@ -10,6 +10,7 @@
 		"dev": "nuxt dev",
 		"build": "nuxt build",
 		"preview": "nuxt preview",
+		"tunnel": "cloudflared tunnel --url http://localhost:3000",
 		"nuxt:prepare": "nuxt prepare",
 		"cf:build": "NITRO_PRESET=cloudflare_pages nuxt build",
 		"cf:dev": "NITRO_PRESET=cloudflare_pages nuxt build && wrangler pages dev dist --compatibility-flags=nodejs_compat",

@@ -10,6 +10,8 @@
     "dev:astro": "cd withastro && bun run dev",
     "dev:nuxt": "cd withnuxt && pnpm run dev",
     "dev": "cd withastro && bun run dev & cd withnuxt && pnpm run dev; wait",
+    "tunnel:astro": "cd withastro && bun run tunnel",
+    "tunnel:nuxt": "cd withnuxt && pnpm run tunnel",
     "build:astro": "cd withastro && bun run build",
     "build:nuxt": "cd withnuxt && pnpm run build",
     "build": "pnpm run build:astro && pnpm run build:nuxt",
